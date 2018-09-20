@@ -66,4 +66,31 @@ class JacocoParser implements CoverageReportParser {
         }
     }
 
+    @Override
+    public float getWithCoverageType(String jacocoFilePath, String coverageType) {
+        final String content;
+        try {
+            content = FileUtils.readFileToString(new File(jacocoFilePath));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(
+                    "Can't read Jacoco report by path: " + jacocoFilePath);
+        }
+
+        final float missed = getByXpath(jacocoFilePath, content, getMissedXpath(coverageType));
+        final float covered = getByXpath(jacocoFilePath, content, getCoverageXpath(coverageType));
+        final float lines = covered + missed;
+        if (lines == 0) {
+            return 0;
+        } else {
+            return covered / (lines);
+        }
+    }
+
+    private String getMissedXpath(String coverageType) {
+        return "/report/counter[@type='" + coverageType.toUpperCase() + "']/@missed";
+    }
+
+    private String getCoverageXpath(String coverageType) {
+        return "/report/counter[@type='" + coverageType.toUpperCase() + "']/@covered";
+    }
 }

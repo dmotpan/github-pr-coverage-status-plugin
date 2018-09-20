@@ -21,4 +21,5 @@ interface CoverageReportParser {
 
     float get(String filePath);
 
+    float getWithCoverageType(String filePath, String coverageType);
 }

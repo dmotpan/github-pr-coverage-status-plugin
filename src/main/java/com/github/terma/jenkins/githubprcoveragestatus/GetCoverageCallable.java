@@ -33,24 +33,27 @@ import java.util.List;
 final class GetCoverageCallable extends MasterToSlaveFileCallable<Float> implements CoverageRepository {
 
     private final boolean disableSimpleCov;
+    private String coverageType = "";
 
-    GetCoverageCallable(final boolean disableSimpleCov) {
+    GetCoverageCallable(final boolean disableSimpleCov, final String coverageType) {
         this.disableSimpleCov = disableSimpleCov;
+        this.coverageType = coverageType;
     }
 
-    private static List<Float> getFloats(File ws, String path, CoverageReportParser parser) {
+    private List<Float> getFloats(File ws, String path, CoverageReportParser parser) {
         FileSet fs = Util.createFileSet(ws, path);
         DirectoryScanner ds = fs.getDirectoryScanner();
         String[] files = ds.getIncludedFiles();
         List<Float> cov = new ArrayList<Float>();
-        for (String file : files) cov.add(parser.get(new File(ds.getBasedir(), file).getAbsolutePath()));
+        for (String file : files)
+            cov.add(parser.getWithCoverageType(new File(ds.getBasedir(), file).getAbsolutePath(), coverageType));
         return cov;
     }
 
     @Override
     public float get(final FilePath workspace) throws IOException, InterruptedException {
         if (workspace == null) throw new IllegalArgumentException("Workspace should not be null!");
-        return workspace.act(new GetCoverageCallable(disableSimpleCov));
+        return workspace.act(new GetCoverageCallable(disableSimpleCov, coverageType));
     }
 
     @Override

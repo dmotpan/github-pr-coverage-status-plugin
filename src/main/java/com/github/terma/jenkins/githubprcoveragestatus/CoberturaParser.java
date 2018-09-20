@@ -65,5 +65,8 @@ class CoberturaParser implements CoverageReportParser {
         }
     }
 
-
+    @Override
+    public float getWithCoverageType(String filePath, String coverageType) {
+        return 0;
+    }
 }

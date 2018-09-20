@@ -36,4 +36,9 @@ public class SimpleCovParser implements CoverageReportParser {
                     "from:\n" + content);
         }
     }
+
+    @Override
+    public float getWithCoverageType(String filePath, String coverageType) {
+        return 0;
+    }
 }
