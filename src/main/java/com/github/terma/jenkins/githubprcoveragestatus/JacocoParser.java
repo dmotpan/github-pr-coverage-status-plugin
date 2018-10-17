@@ -85,8 +85,11 @@ class JacocoParser implements CoverageReportParser {
     }
 
     private boolean isValidCoverageType(String coverageType) {
+        if (coverageType == null) {
+            return false;
+        }
         for (String type : coverageTypes) {
-            if (coverageType.equalsIgnoreCase(type)) {
+            if (type.equalsIgnoreCase(coverageType)) {
                 return true;
             }
         }
