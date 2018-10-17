@@ -34,6 +34,12 @@ class JacocoParser implements CoverageReportParser {
     private static final String MISSED_XPATH = "/report/counter[@type='LINE']/@missed";
     private static final String COVERAGE_XPATH = "/report/counter[@type='LINE']/@covered";
 
+    private String coverageType = "";
+
+    public JacocoParser(String coverageType) {
+        this.coverageType = coverageType;
+    }
+
     private float getByXpath(final String filePath, final String content, final String xpath) {
         try {
             return Float.parseFloat(XmlUtils.findInXml(content, xpath));
@@ -46,28 +52,28 @@ class JacocoParser implements CoverageReportParser {
         }
     }
 
-    @Override
-    public float get(final String jacocoFilePath) {
-        final String content;
-        try {
-            content = FileUtils.readFileToString(new File(jacocoFilePath));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "Can't read Jacoco report by path: " + jacocoFilePath);
-        }
+//    @Override
+//    public float get(final String jacocoFilePath) {
+//        final String content;
+//        try {
+//            content = FileUtils.readFileToString(new File(jacocoFilePath));
+//        } catch (IOException e) {
+//            throw new IllegalArgumentException(
+//                    "Can't read Jacoco report by path: " + jacocoFilePath);
+//        }
+//
+//        final float lineMissed = getByXpath(jacocoFilePath, content, MISSED_XPATH);
+//        final float lineCovered = getByXpath(jacocoFilePath, content, COVERAGE_XPATH);
+//        final float lines = lineCovered + lineMissed;
+//        if (lines == 0) {
+//            return 0;
+//        } else {
+//            return lineCovered / (lines);
+//        }
+//    }
 
-        final float lineMissed = getByXpath(jacocoFilePath, content, MISSED_XPATH);
-        final float lineCovered = getByXpath(jacocoFilePath, content, COVERAGE_XPATH);
-        final float lines = lineCovered + lineMissed;
-        if (lines == 0) {
-            return 0;
-        } else {
-            return lineCovered / (lines);
-        }
-    }
-
     @Override
-    public float getWithCoverageType(String jacocoFilePath, String coverageType) {
+    public float get(String jacocoFilePath) {
         final String content;
         try {
             content = FileUtils.readFileToString(new File(jacocoFilePath));
@@ -78,11 +84,11 @@ class JacocoParser implements CoverageReportParser {
 
         final float missed = getByXpath(jacocoFilePath, content, getMissedXpath(coverageType));
         final float covered = getByXpath(jacocoFilePath, content, getCoverageXpath(coverageType));
-        final float lines = covered + missed;
-        if (lines == 0) {
+        final float coverage = covered + missed;
+        if (coverage == 0) {
             return 0;
         } else {
-            return covered / (lines);
+            return covered / (coverage);
         }
     }
 

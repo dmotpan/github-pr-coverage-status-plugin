@@ -64,9 +64,4 @@ class CloverParser implements CoverageReportParser {
         if (statements == 0) return 0;
         else return coveredStatements / statements;
     }
-
-    @Override
-    public float getWithCoverageType(String filePath, String coverageType) {
-        return 0;
-    }
 }

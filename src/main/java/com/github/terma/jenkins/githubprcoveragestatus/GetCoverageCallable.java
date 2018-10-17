@@ -46,7 +46,7 @@ final class GetCoverageCallable extends MasterToSlaveFileCallable<Float> impleme
         String[] files = ds.getIncludedFiles();
         List<Float> cov = new ArrayList<Float>();
         for (String file : files)
-            cov.add(parser.getWithCoverageType(new File(ds.getBasedir(), file).getAbsolutePath(), coverageType));
+            cov.add(parser.get(new File(ds.getBasedir(), file).getAbsolutePath()));
         return cov;
     }
 
@@ -61,8 +61,8 @@ final class GetCoverageCallable extends MasterToSlaveFileCallable<Float> impleme
         final List<Float> cov = new ArrayList<Float>();
         cov.addAll(getFloats(ws, "**/cobertura.xml", new CoberturaParser()));
         cov.addAll(getFloats(ws, "**/cobertura-coverage.xml", new CoberturaParser()));
-        cov.addAll(getFloats(ws, "**/jacoco.xml", new JacocoParser()));
-        cov.addAll(getFloats(ws, "**/jacocoTestReport.xml", new JacocoParser())); //default for gradle
+        cov.addAll(getFloats(ws, "**/jacoco.xml", new JacocoParser(coverageType)));
+        cov.addAll(getFloats(ws, "**/jacocoTestReport.xml", new JacocoParser(coverageType))); //default for gradle
         cov.addAll(getFloats(ws, "**/clover.xml", new CloverParser()));
         if (!disableSimpleCov) cov.addAll(getFloats(ws, "**/coverage.json", new SimpleCovParser()));
 
